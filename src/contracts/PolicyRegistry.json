@@ -1,0 +1,58 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {"indexed": true, "internalType": "address", "name": "business", "type": "address"},
+      {"indexed": false, "internalType": "string", "name": "version", "type": "string"},
+      {"indexed": false, "internalType": "string", "name": "ipfsCID", "type": "string"},
+      {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}
+    ],
+    "name": "PolicyUpdated",
+    "type": "event"
+  },
+  {
+    "inputs": [{"internalType": "address", "name": "business", "type": "address"}],
+    "name": "getLatestPolicy",
+    "outputs": [
+      {"internalType": "string", "name": "", "type": "string"},
+      {"internalType": "bytes32", "name": "", "type": "bytes32"},
+      {"internalType": "string", "name": "", "type": "string"},
+      {"internalType": "uint256", "name": "", "type": "uint256"}
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {"internalType": "address", "name": "business", "type": "address"},
+      {"internalType": "uint256", "name": "index", "type": "uint256"}
+    ],
+    "name": "getPolicy",
+    "outputs": [
+      {"internalType": "string", "name": "", "type": "string"},
+      {"internalType": "bytes32", "name": "", "type": "bytes32"},
+      {"internalType": "string", "name": "", "type": "string"},
+      {"internalType": "uint256", "name": "", "type": "uint256"}
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "address", "name": "business", "type": "address"}],
+    "name": "getPolicyCount",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {"internalType": "string", "name": "ipfsCID", "type": "string"},
+      {"internalType": "bytes32", "name": "contentHash", "type": "bytes32"},
+      {"internalType": "string", "name": "version", "type": "string"}
+    ],
+    "name": "publishPolicy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
