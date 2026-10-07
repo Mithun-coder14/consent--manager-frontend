@@ -1,0 +1,68 @@
+TERMS AND CONDITIONS — NEXATECH SOLUTIONS PVT. LTD.
+Effective Date: October 1, 2026
+Version: 2.0
+
+1. INTRODUCTION
+These Terms and Conditions ("Terms") govern your use of NexaTech Solutions Pvt. Ltd. ("Company", "we", "us") products and services. By using our services, you agree to these Terms.
+
+2. DATA WE COLLECT
+We collect the following personal data:
+- Full name and email address
+- Phone number and date of birth
+- Physical location and IP address
+- Browsing history and device information
+- Purchase history and financial transaction data
+- Cookies and tracking pixels
+- Biometric data for identity verification
+
+3. PURPOSE OF DATA COLLECTION
+Your data is collected and processed for the following purposes:
+- Personalization of services and content recommendations
+- Marketing and targeted advertising campaigns
+- Analytics and product improvement
+- Legal compliance and fraud prevention
+- Customer support and communication
+- Research and development
+
+4. DATA RETENTION
+We retain your personal data for a period of 5 years from the date of collection. Financial transaction data is retained for 7 years as required by law. After this period, data is securely deleted or anonymized.
+
+5. THIRD-PARTY SHARING
+We share your data with the following third-party vendors:
+- Google Analytics (website analytics)
+- Meta Ads (advertising)
+- Stripe (payment processing)
+- AWS (cloud infrastructure)
+- Intercom (customer support)
+- Salesforce (CRM)
+- SendGrid (email communication)
+
+Your data may be transferred to servers located outside India, including the United States and European Union.
+
+6. YOUR RIGHTS
+You have the right to:
+- Access your personal data at any time
+- Request correction of inaccurate data
+- Request deletion of your data (subject to legal requirements)
+- Opt-out of marketing communications
+- Data portability
+
+7. CONSENT
+By using our services, you provide explicit consent for us to collect, process and share your data as described above. You may withdraw consent at any time by contacting us at privacy@nexatech.in
+
+8. DATA SECURITY
+We implement industry-standard security measures including AES-256 encryption, SSL/TLS protocols, and regular security audits. However, no system is completely secure.
+
+9. COOKIES
+We use essential cookies, analytics cookies, and marketing cookies. You can manage cookie preferences in your browser settings. Disabling cookies may affect service functionality.
+
+10. CHANGES TO TERMS
+We reserve the right to modify these Terms at any time. Users will be notified of significant changes via email. Continued use of services constitutes acceptance of updated Terms.
+
+11. CONTACT
+For privacy concerns or data requests:
+Email: privacy@nexatech.in
+Address: NexaTech Solutions Pvt. Ltd., Koramangala, Bangalore - 560034
+
+12. GOVERNING LAW
+These Terms are governed by the laws of India. Any disputes shall be subject to the jurisdiction of courts in Bangalore, India.

@@ -1,27 +1,19 @@
 import { useState } from 'react'
-import { useAccount, useConnect, useDisconnect, useSwitchChain } from 'wagmi'
-import { injected } from 'wagmi/connectors'
-import BusinessDashboard from './BusinessDashboard'
-import UserDashboard from './UserDashboard'
+import { usePrivy } from '@privy-io/react-auth'
+import { useAccount, useSwitchChain } from 'wagmi'
+import RegisterBusiness from './components/RegisterBusiness'
+import CreateAgreement from './components/CreateAgreement'
+import AgreementsList from './components/AgreementsList'
 import './index.css'
 
 function App() {
-  const [activeTab, setActiveTab] = useState('user')
-  const { address, isConnected } = useAccount()
-  const { connect } = useConnect()
-  const { disconnect } = useDisconnect()
+  const [activeTab, setActiveTab] = useState('agreements')
+  const { login, logout, authenticated, user } = usePrivy()
+  const { address } = useAccount()
   const { switchChain } = useSwitchChain()
 
-  const shortAddress = address
-    ? `${address.slice(0, 6)}...${address.slice(-4)}`
-    : ''
-
-  const handleConnect = async () => {
-    connect({ connector: injected() })
-    setTimeout(() => {
-      switchChain({ chainId: 8453 })
-    }, 1000)
-  }
+  const displayName = user?.email?.address || user?.google?.email || 
+    (address ? `${address.slice(0, 6)}...${address.slice(-4)}` : '')
 
   return (
     <div>
@@ -29,74 +21,95 @@ function App() {
       <div className="header">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1>Consent Manager</h1>
-            <p>Transparent. On-chain. Yours.</p>
+            <h1>⚡ LexChain</h1>
+            <p>Agreements on Blockchain — If anyone changes, everyone knows.</p>
           </div>
-          {isConnected ? (
-            <div style={{ textAlign: 'right' }}>
-              <p style={{ fontSize: '13px', color: '#7c3aed', fontWeight: '500' }}>
-                {shortAddress}
-              </p>
-              <button
-                className="btn btn-primary"
-                style={{ marginTop: '6px', padding: '6px 12px', fontSize: '12px', marginRight: '6px' }}
-                onClick={() => switchChain({ chainId: 8453 })}
-              >
-                Switch to Base
-              </button>
+          {authenticated ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="glow-dot"></span>
+                <span style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
+                  {displayName}
+                </span>
+              </div>
               <button
                 className="btn btn-outline"
-                style={{ marginTop: '6px', padding: '6px 12px', fontSize: '12px' }}
-                onClick={() => disconnect()}
+                style={{ padding: '6px 12px', fontSize: '12px' }}
+                onClick={() => switchChain({ chainId: 8453 })}
               >
-                Disconnect
+                Base
+              </button>
+              <button
+                className="btn btn-danger"
+                style={{ padding: '6px 12px', fontSize: '12px' }}
+                onClick={logout}
+              >
+                Sign out
               </button>
             </div>
           ) : (
-            <button
-              className="btn btn-primary"
-              onClick={handleConnect}
-            >
-              Connect Wallet
+            <button className="btn btn-primary" onClick={login}>
+              Get Started
             </button>
           )}
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="tabs">
-        <button
-          className={`tab ${activeTab === 'user' ? 'active' : ''}`}
-          onClick={() => setActiveTab('user')}
-        >
-          My Consents
-        </button>
-        <button
-          className={`tab ${activeTab === 'business' ? 'active' : ''}`}
-          onClick={() => setActiveTab('business')}
-        >
-          Business
-        </button>
-      </div>
+      {authenticated && (
+        <div className="tabs">
+          <button
+            className={`tab ${activeTab === 'agreements' ? 'active' : ''}`}
+            onClick={() => setActiveTab('agreements')}
+          >
+            My Agreements
+          </button>
+          <button
+            className={`tab ${activeTab === 'create' ? 'active' : ''}`}
+            onClick={() => setActiveTab('create')}
+          >
+            + Create
+          </button>
+          <button
+            className={`tab ${activeTab === 'business' ? 'active' : ''}`}
+            onClick={() => setActiveTab('business')}
+          >
+            Business Profile
+          </button>
+        </div>
+      )}
 
       {/* Content */}
       <div className="content">
-        {!isConnected ? (
+        {!authenticated ? (
           <div className="empty-state">
-            <div className="icon">🔐</div>
-            <p>Connect your wallet to get started</p>
+            <div className="icon">⚡</div>
+            <p style={{ fontSize: '22px', fontWeight: '700', color: 'var(--text)', marginBottom: '8px' }}>
+              Welcome to LexChain
+            </p>
+            <p style={{ marginBottom: '8px', color: 'var(--text-dim)' }}>
+              Agreements on Blockchain — If anyone changes, everyone knows.
+            </p>
+            <p style={{ marginBottom: '24px', fontSize: '13px', color: 'var(--text-muted)' }}>
+              Rental agreements · Employment contracts · NDAs · T&Cs · Insurance policies
+            </p>
             <button
               className="btn btn-primary"
-              style={{ marginTop: '16px' }}
-              onClick={handleConnect}
+              style={{ padding: '12px 32px', fontSize: '15px' }}
+              onClick={login}
             >
-              Connect Wallet
+              Get Started — it's free
             </button>
+            <p style={{ marginTop: '16px', fontSize: '12px', color: 'var(--text-muted)' }}>
+              Sign in with Google, email or wallet · Running on Base
+            </p>
           </div>
-        ) : activeTab === 'user' ? (
-          <UserDashboard />
+        ) : activeTab === 'agreements' ? (
+          <AgreementsList />
+        ) : activeTab === 'create' ? (
+          <CreateAgreement onCreated={() => setActiveTab('agreements')} />
         ) : (
-          <BusinessDashboard />
+          <RegisterBusiness />
         )}
       </div>
     </div>
