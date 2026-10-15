@@ -1,19 +1,14 @@
 import { useState } from 'react'
-import { useWallets } from '@privy-io/react-auth'
-import { createPublicClient, http, encodeFunctionData } from 'viem'
-import { base } from 'viem/chains'
+import { encodeFunctionData } from 'viem'
 import { AGREEMENT_REGISTRY_ADDRESS, AGREEMENT_REGISTRY_ABI } from '../contracts/config'
-
-const publicClient = createPublicClient({
-  chain: base,
-  transport: http('https://mainnet.base.org'),
-})
+import { useLexWallet } from '../useLexWallet'
 
 function RegisterBusiness() {
-  const { wallets } = useWallets()
+  const { address, sendTx, ready } = useLexWallet()
   const [form, setForm] = useState({ name: '', slug: '', logo: '' })
   const [isPending, setIsPending] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [txHash, setTxHash] = useState('')
   const [error, setError] = useState(null)
 
   const handleSlugChange = (e) => {
@@ -22,49 +17,25 @@ function RegisterBusiness() {
   }
 
   const handleRegister = async () => {
+    setError(null)
     if (!form.name || !form.slug) {
-      alert('Please fill in name and slug')
+      setError('Please fill in name and slug')
       return
     }
 
     setIsPending(true)
-    setError(null)
-
     try {
-      const embeddedWallet = wallets.find(w => w.walletClientType === 'privy')
-      const wallet = embeddedWallet || wallets[0]
-
-      if (!wallet) {
-        setError('No wallet found. Please sign out and sign back in.')
-        setIsPending(false)
-        return
-      }
-
       const data = encodeFunctionData({
         abi: AGREEMENT_REGISTRY_ABI,
         functionName: 'registerBusiness',
         args: [form.name, form.slug, form.logo || ''],
       })
-
-      const provider = await wallet.getEthereumProvider()
-
-      const txHash = await provider.request({
-        method: 'eth_sendTransaction',
-        params: [{
-          from: wallet.address,
-          to: AGREEMENT_REGISTRY_ADDRESS,
-          data: data,
-        }],
-      })
-
-      console.log('TX Hash:', txHash)
-      const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash })
-      console.log('Receipt:', receipt)
+      const hash = await sendTx({ to: AGREEMENT_REGISTRY_ADDRESS, data })
+      setTxHash(hash)
       setIsSuccess(true)
-
     } catch (err) {
-      console.error('Error:', err)
-      setError(err.message)
+      console.error('Register error:', err)
+      setError(err.shortMessage || err.message)
     } finally {
       setIsPending(false)
     }
@@ -77,9 +48,17 @@ function RegisterBusiness() {
         <p style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>
           Business Registered!
         </p>
-        <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+        <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px' }}>
           Users can now find you as <strong>{form.slug}</strong>
         </p>
+        <a
+          href={`https://basescan.org/tx/${txHash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontSize: '12px', color: 'var(--purple-bright)' }}
+        >
+          View transaction on Basescan ↗
+        </a>
       </div>
     )
   }
@@ -105,7 +84,7 @@ function RegisterBusiness() {
         <label className="label">Unique Slug (your URL)</label>
         <input
           className="input"
-          placeholder="e.g. nexatech"
+          placeholder="e.g. nexatech2"
           value={form.slug}
           onChange={handleSlugChange}
         />
@@ -117,7 +96,7 @@ function RegisterBusiness() {
       {error && (
         <div className="tx-status error" style={{ marginBottom: '12px' }}>
           <span>❌</span>
-          <span style={{ fontSize: '12px' }}>{error}</span>
+          <span style={{ fontSize: '12px', wordBreak: 'break-word' }}>{error}</span>
         </div>
       )}
 
@@ -125,17 +104,18 @@ function RegisterBusiness() {
         className="btn btn-primary"
         style={{ width: '100%' }}
         onClick={handleRegister}
-        disabled={isPending}
+        disabled={isPending || !ready}
       >
-        {isPending
-          ? <span className="pulse">⏳ Registering...</span>
-          : '⚡ Register Business'
-        }
+        {!ready
+          ? <span className="pulse">⏳ Preparing wallet...</span>
+          : isPending
+            ? <span className="pulse">⏳ Registering...</span>
+            : '⚡ Register Business — free'}
       </button>
 
-      {wallets.length === 0 && (
-        <p style={{ fontSize: '12px', color: 'var(--amber)', marginTop: '12px', textAlign: 'center' }}>
-          ⚠️ No wallet detected. Sign out and sign back in.
+      {address && (
+        <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '12px', textAlign: 'center', fontFamily: 'monospace' }}>
+          Smart wallet: {address}
         </p>
       )}
     </div>
