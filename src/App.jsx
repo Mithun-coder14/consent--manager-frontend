@@ -147,7 +147,7 @@ function App() {
         ) : (
           <Routes>
             <Route path="/" element={<AgreementsList />} />
-            <Route path="/create" element={<CreateAgreement onCreated={() => navigate('/')} />} />
+            <Route path="/create" element={<CreateAgreement />} />
             <Route path="/business" element={<RegisterBusiness />} />
             <Route path="/agreement/:id" element={<AgreementView />} />
             <Route path="*" element={<AgreementsList />} />
