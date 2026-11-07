@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { encodeFunctionData } from 'viem'
 import { AGREEMENT_REGISTRY_ADDRESS, AGREEMENT_REGISTRY_ABI } from '../contracts/config'
 import { useLexWallet } from '../useLexWallet'
-
+import { friendlyError } from '../lexchain'
+import { EXPLORER_URL } from '../contracts/config'
 function RegisterBusiness() {
   const { address, sendTx, ready } = useLexWallet()
   const [form, setForm] = useState({ name: '', slug: '', logo: '' })
@@ -30,12 +31,12 @@ function RegisterBusiness() {
         functionName: 'registerBusiness',
         args: [form.name, form.slug, form.logo || ''],
       })
-      const hash = await sendTx({ to: AGREEMENT_REGISTRY_ADDRESS, data })
+      const {hash} = await sendTx({ to: AGREEMENT_REGISTRY_ADDRESS, data })
       setTxHash(hash)
       setIsSuccess(true)
     } catch (err) {
       console.error('Register error:', err)
-      setError(err.shortMessage || err.message)
+       setError(friendlyError(err))
     } finally {
       setIsPending(false)
     }
@@ -52,7 +53,7 @@ function RegisterBusiness() {
           Users can now find you as <strong>{form.slug}</strong>
         </p>
         <a
-          href={`https://basescan.org/tx/${txHash}`}
+          href={`${EXPLORER_URL}/tx/${txHash}`}
           target="_blank"
           rel="noopener noreferrer"
           style={{ fontSize: '12px', color: 'var(--purple-bright)' }}
